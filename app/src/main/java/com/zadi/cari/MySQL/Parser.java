@@ -12,6 +12,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Muh. Zadi on 7/13/2017.
@@ -21,13 +22,14 @@ public class Parser extends AsyncTask<Void, Void, Integer> {
     String data;
     RecyclerView rv;
     Context c;
-    ArrayList<String> names=new ArrayList<>();
+    //ArrayList<String> names=new ArrayList<>();
+    ArrayList<HashMap<String, String>> names = new ArrayList<HashMap<String, String>>();
 
     public Parser(Context c, String data, RecyclerView rv) {
         this.data = data;
         this.rv = rv;
         this.c = c;
-        ArrayList<String> names=new ArrayList<>();
+        //ArrayList<HashMap<String, String>> names = new ArrayList<HashMap<String, String>>();
     }
 
     @Override
@@ -56,8 +58,16 @@ public class Parser extends AsyncTask<Void, Void, Integer> {
             for(int i=0; i<ja.length(); i++)
             {
                 jo=ja.getJSONObject(i);
-                String name=jo.getString("indonesia");
-                names.add(name);
+                HashMap<String, String> map = new HashMap<String, String>();
+                map.put("id_kosakata", jo.getString("id_kosakata"));
+                map.put("indonesia", jo.getString("indonesia"));
+                map.put("arab", jo.getString("arab"));
+                map.put("image", jo.getString("image"));
+                map.put("voice", jo.getString("voice"));
+                map.put("category", jo.getString("category"));
+               // list_data.add(map);
+                //String name=jo.getString("indonesia");
+                names.add(map);
             }
 
 

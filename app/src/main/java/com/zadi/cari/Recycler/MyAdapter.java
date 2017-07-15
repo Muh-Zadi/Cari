@@ -3,7 +3,10 @@ package com.zadi.cari.Recycler;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
+import android.media.MediaPlayer;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,9 +15,11 @@ import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.bumptech.glide.Glide;
 import com.zadi.cari.Detail;
 import com.zadi.cari.R;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -23,12 +28,13 @@ import java.util.HashMap;
  */
 
 public class MyAdapter extends RecyclerView.Adapter<MyHolder>{
-
+private MediaPlayer mp3;
      Context c;
-    ArrayList<String> names;
-    public MyAdapter(Context c, ArrayList<String> names){
-        this.c=c;
-        this.names=names;
+    ArrayList<HashMap<String, String>> names;
+
+    public MyAdapter(Context c, ArrayList<HashMap<String, String>> names) {
+        this.c = c;
+        this.names = names;
     }
 
     @Override
@@ -40,7 +46,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder>{
 
     @Override
     public void onBindViewHolder(MyHolder holder, final int position) {
-        holder.nameTxt.setText(names.get(position));
+        holder.nameTxt.setText(names.get(position).get("indonesia"));
         holder.nameTxt.setOnClickListener(new View.OnClickListener(){
 
             @Override
@@ -54,7 +60,34 @@ public class MyAdapter extends RecyclerView.Adapter<MyHolder>{
                 dialog.setView(v);
                 dialog.setTitle("Hasil pencarian");
                 dialog.setIcon(R.mipmap.ic_launcher);
-                txtIndo.setText(names.get(position));
+                Glide.with(c)
+                        .load("http://192.168.1.13/kosakata/images/" + names.get(position).get("image"))
+                        .crossFade()
+                        .placeholder(R.mipmap.no_available)
+                        .into(zoomImage);
+                txtIndo.setText(names.get(position).get("indonesia"));
+                btnArab.setText(Html.fromHtml(names.get(position).get("arab")));
+                btnArab.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        final String voice = "http://192.168.1.13/kosakata/voices/" + names.get(position).get("voice");
+                        mp3 = new MediaPlayer();
+                        mp3.setAudioStreamType(AudioManager.STREAM_MUSIC);
+                        try{
+                            mp3.setDataSource(voice);
+                            mp3.prepare();
+                        }catch (IllegalArgumentException e){
+                            e.printStackTrace();
+                        }catch (SecurityException e){
+                            e.printStackTrace();
+                        }catch (IllegalStateException e){
+                            e.printStackTrace();
+                        }catch (IOException e){
+                            e.printStackTrace();
+                        }
+                        mp3.start();
+                    }
+                });
                 dialog.show();
             }
         });

@@ -21,7 +21,7 @@ public class MainActivity extends AppCompatActivity {
     SearchView sv;
     ImageView noDataImg, noNetworkImg;
 
-    String urlAddress="http://192.168.43.228/android_search/searcher.php";
+    String urlAddress="http://192.168.1.13/android_search/searcher.php";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
